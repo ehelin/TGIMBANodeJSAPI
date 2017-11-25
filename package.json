@@ -1,0 +1,31 @@
+{
+  "name": "TGIMBA-TypeScript-API",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "@types/aws-sdk": "0.0.42",
+    "@types/chai": "^3.4.34",
+    "@types/express": "^4.0.35",
+    "@types/mocha": "^2.2.44",
+    "@types/sinon": "^1.16.34",
+    "@types/sqlite3": "^3.1.1",
+    "aws-sdk": "^2.9.0",
+    "body-parser": "^1.16.0",
+    "chai": "^3.5.0",
+    "dateformat": "^3.0.2",
+    "express": "^4.14.1",
+    "mocha": "^3.2.0",
+    "safe-mock": "^0.2.10",
+    "sinon": "^1.17.7",
+    "sqlite3": "^3.1.13",
+    "tedious-promises": "^0.4.1",
+    "ts-node": "^3.3.0",
+    "typescript": "^2.1.5",
+    "typings": "^2.1.0"
+  },
+  "scripts": {
+    "test": "TS_NODE_CACHE=true mocha --timeout 10000 --require ts-node/register 'tests/**/*.test.ts'",
+    "build": "tsc -p .",
+    "start": "node build/app.js"
+  }
+}

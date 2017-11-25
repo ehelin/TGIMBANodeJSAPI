@@ -1,0 +1,35 @@
+version: 0.2
+
+phases:
+  install:
+    commands:
+      - echo INSTALL Commands ------------------------------------------------
+      - echo Nothing to do in the install phase...
+  pre_build:
+    commands:
+      - echo PRE BUILD Commands ----------------------------------------------
+      - echo Nothing to do in the pre_build phase...
+  build:
+    commands:
+      - echo BUILD Commands --------------------------------------------------
+      - ls
+      - npm install
+      - npm run build
+      - npm test
+      - rm -rf app
+      - rm app.ts
+      - rm buildspec.yml
+      - rm cron.yaml
+      - rm tsconfig.json
+      - rm typings.json
+      - cp -r build/* .
+      - rm -rf build
+      - ls
+      - echo build commands done
+  post_build:
+    commands:
+      - echo POST BUILD Commands ---------------------------------------------
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - '**/*'
