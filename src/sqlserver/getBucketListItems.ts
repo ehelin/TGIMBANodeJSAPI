@@ -18,12 +18,12 @@ export function getBucketListItems(query: any): Promise<string> {
         .parameter('userName', TYPES.VarChar, query.userName)
         .execute()
         .then(function(results)
-    {
-        var parsedResults = parseResults(results);
-        return processResult(results, false);
-    }).fail(function(err) {
-        return processResult('Get Bucket list Items error: ' + err, true);
-    });
+        {
+            var parsedResults = parseResults(results);
+            return processResult(results, false);
+        }).fail(function(err) {
+            return processResult('Get Bucket list Items error: ' + err, true);
+        });
 }
 
 // TODO - move to a utils module (if possible)
@@ -47,22 +47,22 @@ export function processResult(result: any, isError: boolean): Promise<string> {
 }
 
 export function parseResults(results: any): any {  //TODO add return type
-  	let dateFormat = require('dateformat');
-  	let parsedResults = null;
+    let dateFormat = require('dateformat');
+    let parsedResults = null;
 
-  	if (results) {
-  	    new Array(results.length);
+    if (results) {
+        new Array(results.length);
         for(let i=0; i<results.length; i++)
         {
             parsedResults[i] = results[i].ListItemName + ','
-                                    + dateFormat(results[i].Created, 'mm/dd/yyyy') + ','
-                                    + results[i].Category + ','
-                                    + getIntStringAchievedValue(results[i].Achieved) + ','
-                                    + results[i].BucketListItemId + ';';
+                + dateFormat(results[i].Created, 'mm/dd/yyyy') + ','
+                + results[i].Category + ','
+                + getIntStringAchievedValue(results[i].Achieved) + ','
+                + results[i].BucketListItemId + ';';
         }
     }
 
-  	return parsedResults;
+    return parsedResults;
 }
 
 // TODO - move to util module?
@@ -105,18 +105,18 @@ export function evaluateParameter(query: any): string {
 }
 
 export function parametersExist(query: any): boolean {
-	let pmtersExt = false;
+    let pmtersExt = false;
 
-	if (query!= null && query != undefined)
-	{
-		if (query.userName != null
-			&& query.userName != undefined
-				&& query.sortString!= null
-					&& query.sortString != undefined)
-		{
-			pmtersExt = true;
-		}
-	}
+    if (query!= null && query != undefined)
+    {
+        if (query.userName != null
+            && query.userName != undefined
+            && query.sortString!= null
+            && query.sortString != undefined)
+        {
+            pmtersExt = true;
+        }
+    }
 
-	return pmtersExt;
+    return pmtersExt;
 }

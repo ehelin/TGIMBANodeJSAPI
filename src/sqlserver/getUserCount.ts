@@ -6,13 +6,13 @@ export function getUserCount(): Promise<string> {
     setConnection();
 
     return tp.sql(Constants.GET_USER_COUNT)
-	  .execute()
-	  .then(function(results) {
-	      let count = parseResults(results);
-          return processResult(count, false);
-	  }).fail(function(err) {
-	      return processResult('Get User Count error: ' + err, true);
-	  });
+        .execute()
+        .then(function(results) {
+            let count = parseResults(results);
+            return processResult(count, false);
+        }).fail(function(err) {
+            return processResult('Get User Count error: ' + err, true);
+        });
 }
 
 // TODO - move to a utils module (if possible)
@@ -36,15 +36,15 @@ export function processResult(result: any, isError: boolean): Promise<string> {
 }
 
 export function parseResults(results) {
-	let count = 0;
+    let count = 0;
 
-	if (results) {
+    if (results) {
         for (var x = 0; x < results.length; x++) {
             count = count + 1;
         }
     }
 
-	return count;	
+    return count;
 }
 
 

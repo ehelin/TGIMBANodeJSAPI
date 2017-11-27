@@ -12,19 +12,19 @@ export function processUserRegistration(postBody): Promise<string>{
 
     setConnection();
 
-	let sql = Constants.INSERT_USER;
+    let sql = Constants.INSERT_USER;
 
     return tp.sql(sql)
-    	.parameter('userName', TYPES.VarChar, postBody.userName)
-    	.parameter('salt', TYPES.VarChar, postBody.salt)
-    	.parameter('passWord', TYPES.VarChar, postBody.passWord)
-    	.parameter('email', TYPES.VarChar, postBody.email)
-	  	.execute()
-		.then(function(results) {
-		    return processResult(results, false);
-		  }).fail(function(err) {
-		      return processResult(err, true);
-		  });
+        .parameter('userName', TYPES.VarChar, postBody.userName)
+        .parameter('salt', TYPES.VarChar, postBody.salt)
+        .parameter('passWord', TYPES.VarChar, postBody.passWord)
+        .parameter('email', TYPES.VarChar, postBody.email)
+        .execute()
+        .then(function(results) {
+            return processResult(results, false);
+        }).fail(function(err) {
+            return processResult(err, true);
+        });
 }
 
 // TODO - move to a utils module (if possible)

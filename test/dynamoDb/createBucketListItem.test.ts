@@ -3,28 +3,39 @@ import * as Errors from '../../src/errors';
 import {
     evaluateParameter,
     parametersExist,
-    processResult,
     setParams
 } from "../../src/dynamodb/createBucketListItem";
+import {BucketListItem} from "../../src/dynamodb/dto/objectInterfaces";
 
 describe('When retrieving bucket list items', () => {
-    // TODO - add type
-    let postBody: any;
+    let postBody: BucketListItem;
+    let emptyBody: BucketListItem;
 
     beforeEach(() => {
         postBody = {
-            Achieved: 1,
-            BucketListItemId: '1',
+            ListItemName: 'List Item Name',
+            Created: new Date().toString(),
             Category: 'Hot',
             CategorySortOrder: '',
-            Created: new Date().toString(),
-            ListItemName: 'List Item Name',
+            Achieved: '1',
+            BucketListItemId: '1',
+            UserName: 'userName',
+        };
+
+        emptyBody = {
+            ListItemName: null,
+            Created: null,
+            Category: null,
+            CategorySortOrder: null,
+            Achieved: null,
+            BucketListItemId: null,
+            UserName: null,
         };
     });
 
     describe('evaluateParamter(args) - will detect good parameters', () => {
         it('A parameter that does not exist will return an error', () => {
-            expect(evaluateParameter({})).to.eql(Errors.ERROR_000003_AWS_CreateBucketListItem_ParametersDoNotExist);
+            expect(evaluateParameter(emptyBody)).to.eql(Errors.ERROR_000003_AWS_CreateBucketListItem_ParametersDoNotExist);
         });
 
         it('A parameter that does exist will return null', () => {
@@ -38,7 +49,7 @@ describe('When retrieving bucket list items', () => {
         });
 
         it('A parameter that is has a post, but it is empty should return false', () => {
-            expect(parametersExist({})).to.eql(false);
+            expect(parametersExist(emptyBody)).to.eql(false);
         });
 
         it('A parameter that is has a body but all null properties shoule return false', () => {
@@ -66,27 +77,12 @@ describe('When retrieving bucket list items', () => {
         });
     });
 
-    describe('processResult(args) - will detect errors', () => {
-        it('A error result will return an error', () => {
-            return processResult('An Error', true)
-                .then((result) => {
-                    expect(result.indexOf('Unable to create item')).not.to.eql(-1);
-                });
-        });
-
-        it('A good result will return bucket list items', () => {
-            return processResult(null, false)
-                .then((result) => {
-                    // TODO - put in more definative test for a list of bucketlist items
-                    expect(result).to.not.be.undefined;
-                });
-        });
-    });
-
     describe('setParams(args) - will set params', () => {
         it('Good body produces good params', () => {
             const result =  setParams(postBody);
-            expect(result.Item.Achieved).to.eql(1);
+            expect(result.Item.Achieved).to.eql({
+                'S': '1'
+            });
         });
     });
 });

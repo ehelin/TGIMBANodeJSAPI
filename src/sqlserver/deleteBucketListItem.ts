@@ -4,9 +4,9 @@ import * as Constants from '../constants';
 import * as tp from 'tedious-promises';
 
 export function deleteBucketListItem(postBody): Promise<string> {
-	let parameterStatus = evaluateParameter(postBody);
+    let parameterStatus = evaluateParameter(postBody);
 
-	if (parameterStatus !== null) {
+    if (parameterStatus !== null) {
         return Promise.reject(parameterStatus);
     }
 
@@ -55,15 +55,15 @@ export function evaluateParameter(postBody: any): string {
 }
 
 export function parametersExist(postBody: any): boolean {
-	let pmtersExt = false;
+    let pmtersExt = false;
 
-	if (postBody != null
+    if (postBody != null
         && postBody.BucketListItemId != null
-		&& postBody.BucketListItemId != undefined)
-	{
-		pmtersExt = true;
-	}
+        && postBody.BucketListItemId != undefined)
+    {
+        pmtersExt = true;
+    }
 
-	return pmtersExt;
+    return pmtersExt;
 }
 

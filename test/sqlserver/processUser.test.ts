@@ -164,5 +164,5 @@ describe('When processing users', () => {
         it('a good result with matching password will return true', () => {
             expect(parseResults([{PassWord: 'aPassword'}], 'aPassword')).to.eql(true);
         });
-     });
+    });
 });

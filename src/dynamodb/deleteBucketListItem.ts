@@ -1,35 +1,36 @@
-import * as AWS from 'aws-sdk';
 import * as Errors from '../errors';
-import * as Constants from '../constants';
+import {setDynamoDbConnection} from "../../config";
+import {BucketListId} from "./dto/objectInterfaces";
+import {DynamoDB} from "aws-sdk";
 
-export function deleteBucketListItem(postBody: any): Promise<string> {
+// TODO - add return type
+export function deleteBucketListItem(postBody: BucketListId): Promise<any> {
     let parameterStatus = evaluateParameter(postBody);
 
     if (parameterStatus !== null) {
         return Promise.reject(parameterStatus);
     }
 
-    var params = setParams(postBody);
-    var docClient = setConnection();
+    const params = setParams(postBody);
+    const docClient = setDynamoDbConnection();
 
     return makeCall(docClient, params);
 }
 
-function makeCall(docClient, params) {
-    return docClient.delete(params, function (err, data) {
-        if (err) {
-            return processResult(err, true);
-        } else {
-            return processResult('Record Deleted!', false);
-        }
+function makeCall(docClient: DynamoDB, params: DynamoDB.Types.DeleteItemInput) {
+    return new Promise(function(resolve, reject) {
+        return docClient.deleteItem(params, function (err, data) {
+            if (err) {
+                reject('Unable to delete item: ' + err.message);
+            } else {
+                resolve('Record Deleted!');
+            }
+        });
     });
 }
 
-
-// TODO - make a type for query body
-// Move to utility?
-export function evaluateParameter(query: any): string {
-    let goodParameters = parametersExist(query);
+export function evaluateParameter(postBody: BucketListId): string {
+    let goodParameters = parametersExist(postBody);
 
     if (!goodParameters)
     {
@@ -39,41 +40,27 @@ export function evaluateParameter(query: any): string {
     }
 }
 
-export function parametersExist(query: any): boolean {
+export function parametersExist(postBody: BucketListId): boolean {
     let pmtersExt = false;
 
-    if (query != null
-            && query != undefined
-                && query.BucketListItemId != undefined
-                    && query.BucketListItemId != null) {
+    if (postBody != null
+        && postBody != undefined
+        && postBody.BucketListItemId != undefined
+        && postBody.BucketListItemId != null) {
         pmtersExt = true;
     }
 
     return pmtersExt;
 }
 
-export function processResult(result: any, isError: boolean): Promise<string> {
-    if (isError){
-        return Promise.resolve('Unable to delete item: ' + result.message);
-    } else {
-        return Promise.resolve(result);
-    }
-}
-
-// TODO - move to a utils module (if possible)
-export function setConnection(): AWS.DynamoDB.DocumentClient {
-    AWS.config.update(Constants.getAwsDynamoDbConfig());
-    var docClient = new AWS.DynamoDB.DocumentClient();
-
-    return docClient;
-}
-
-export function setParams(postBody) {
-    var id = Number(postBody.BucketListItemId);
-    var params = {
+export function setParams(postBody: BucketListId): DynamoDB.Types.DeleteItemInput {
+    const id = Number(postBody.BucketListItemId);
+    const params = {
         TableName: "BucketListItem",
         Key: {
-            "BucketListItemId": id
+            BucketListItemId: {
+                S: id.toString(),
+            }
         }
     };
 

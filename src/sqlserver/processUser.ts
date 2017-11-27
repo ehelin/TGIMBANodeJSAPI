@@ -14,14 +14,14 @@ export function processUser(postBody){
     var sql = buildSql(postBody);
 
     return tp.sql(sql)
-	  .execute()
-	  .then(function(results) {
-	  	let userExists = parseResults(results, postBody.pass);
+        .execute()
+        .then(function(results) {
+            let userExists = parseResults(results, postBody.pass);
 
-	  	return processResult(userExists, false);
-	  }).fail(function(err) {
-	      return processResult(err, true);
-	  });
+            return processResult(userExists, false);
+        }).fail(function(err) {
+            return processResult(err, true);
+        });
 };
 
 // TODO - move to a utils module (if possible)
@@ -84,17 +84,17 @@ export function parametersExist(body: any): boolean {
 
 export function parseResults(results, pass)
 {
-  	let userExists = false;
+    let userExists = false;
 
-  	if (results != null 
-  			&& results[0] != null 
-  				&& results[0].PassWord != null 
-  					&& results[0].PassWord.length > 0
-  						&& results[0].PassWord == pass)
-  	{
-  		userExists = true;
-  	}	
+    if (results != null
+        && results[0] != null
+        && results[0].PassWord != null
+        && results[0].PassWord.length > 0
+        && results[0].PassWord == pass)
+    {
+        userExists = true;
+    }
 
-  	return userExists;
+    return userExists;
 };
 

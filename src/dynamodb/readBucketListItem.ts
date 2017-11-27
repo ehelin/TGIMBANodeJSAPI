@@ -1,8 +1,10 @@
-import * as AWS from 'aws-sdk';
 import * as Errors from '../errors';
-import * as Constants from '../constants';
+import {setDynamoDbConnection} from "../../config";
+import {BucketListId, BucketListItem} from "./dto/objectInterfaces";
+import {DynamoDB} from "aws-sdk";
 
-export function readBucketListItem(query: any): Promise<any> {
+// TODO - add return type
+export function readBucketListItem(query: BucketListId): Promise<any> {
     let parameterStatus = evaluateParameter(query);
 
     if (parameterStatus !== null) {
@@ -10,40 +12,24 @@ export function readBucketListItem(query: any): Promise<any> {
     }
 
     var params = setParams(query);
-    var docClient = setConnection();
+    var docClient = setDynamoDbConnection();
 
     return makeCall(docClient, params);
 }
 
-function makeCall(docClient, params): Promise<any> {
-    return docClient.get(params, function (err, data) {
-        if (err) {
-            return processResult(err, true);
-        } else {
-            return processResult(data, false);
-        }
+function makeCall(docClient: DynamoDB, params: DynamoDB.Types.GetItemInput) {
+    return new Promise(function(resolve, reject) {
+        docClient.getItem(params, function (err, data) {
+            if (err){
+                reject('Unable to read item: ' + err.message);
+            } else {
+                resolve(parseResult(data));
+            }
+        });
     });
 }
 
-// TODO - move to a utils module (if possible)
-function setConnection(): AWS.DynamoDB.DocumentClient {
-    AWS.config.update(Constants.getAwsDynamoDbConfig());
-    var docClient = new AWS.DynamoDB.DocumentClient();
-
-    return docClient;
-}
-
-export function processResult(result: any, isError: boolean): Promise<any> {
-    if (isError){
-        return Promise.resolve('Unable to read item: ' + result.message);
-    } else {
-        return Promise.resolve(result);
-    }
-}
-
-// TODO - make a type for query body
-// Move to utility?
-export function evaluateParameter(query: any): string {
+export function evaluateParameter(query: BucketListId): string {
     let goodParameters = parametersExist(query);
 
     if (!goodParameters)
@@ -54,7 +40,7 @@ export function evaluateParameter(query: any): string {
     }
 }
 
-export function parametersExist(query: any): boolean {
+export function parametersExist(query: BucketListId): boolean {
     let pmtersExt = false;
 
     if (query != null
@@ -67,14 +53,30 @@ export function parametersExist(query: any): boolean {
     return pmtersExt;
 }
 
-function setParams(query) {
-    var id = Number(query.BucketListItemId);
-    var params = {
+export function setParams(query: BucketListId): DynamoDB.Types.GetItemInput {
+    const id = Number(query.BucketListItemId);
+    const params = {
         TableName: "BucketListItem",
         Key: {
-            "BucketListItemId": id
+            BucketListItemId: {
+                S: id.toString(),
+            }
         }
     };
 
     return params;
+}
+
+export function parseResult(item: any): any {
+    const result: BucketListItem = {
+        ListItemName: item.Item.ListItemName.S,
+        Created: item.Item.Created.S,
+        Category: item.Item.Category.S,
+        CategorySortOrder: item.Item.CategorySortOrder.S,
+        Achieved: item.Item.Achieved.S,
+        BucketListItemId: item.Item.BucketListItemId.S,
+        UserName: item.Item.UserName.S,
+    };
+
+    return result;
 }

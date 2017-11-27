@@ -1,9 +1,10 @@
-import * as AWS from 'aws-sdk';
 import * as Errors from '../errors';
-import * as Constants from '../constants';
+import {setDynamoDbConnection} from "../../config";
+import {BucketListItem} from "./dto/objectInterfaces";
+import {DynamoDB} from "aws-sdk";
 
-// TODO - add types
-export function createBucketListItem(postBody: any): Promise<any> {
+// TODO - add return type
+export function createBucketListItem(postBody: BucketListItem): Promise<any> {
     let parameterStatus = evaluateParameter(postBody);
 
     if (parameterStatus !== null) {
@@ -11,35 +12,25 @@ export function createBucketListItem(postBody: any): Promise<any> {
     }
 
     var params = setParams(postBody);
-    var docClient = setConnection();
+    var docClient = setDynamoDbConnection();
 
     return makeCall(docClient, params);
 }
 
-// TODO - add types
-function makeCall(docClient: any, params: any): Promise<string> {
-    return docClient.put(params, function (err, data) {
-        var result;
-        if (err) {
-            return processResult(err, true);
-        } else {
-            return processResult('Record Inserted!', false);
-        }
+function makeCall(docClient: DynamoDB, params: DynamoDB.Types.PutItemInput) {
+    return new Promise(function(resolve, reject) {
+        docClient.putItem(params, function (err, data) {
+            if (err){
+                reject('Unable to create item: ' + err.message);
+            } else {
+                resolve('Record Inserted!');
+            }
+        });
     });
 }
 
-// TODO - move to a utils module (if possible)
-function setConnection(): AWS.DynamoDB.DocumentClient {
-    AWS.config.update(Constants.getAwsDynamoDbConfig());
-    var docClient = new AWS.DynamoDB.DocumentClient();
-
-    return docClient;
-}
-
-// TODO - make a type for query body
-// Move to utility?
-export function evaluateParameter(query: any): string {
-    let goodParameters = parametersExist(query);
+export function evaluateParameter(postBody: BucketListItem): string {
+    let goodParameters = parametersExist(postBody);
 
     if (!goodParameters)
     {
@@ -49,7 +40,7 @@ export function evaluateParameter(query: any): string {
     }
 }
 
-export function parametersExist(postBody: any): boolean {
+export function parametersExist(postBody: BucketListItem): boolean {
     let pmtersExt = false;
 
     if (postBody != null
@@ -65,26 +56,33 @@ export function parametersExist(postBody: any): boolean {
     return pmtersExt;
 }
 
-export function setParams(postBody: any) {
-    var params = {
+export function setParams(postBody: BucketListItem): DynamoDB.Types.PutItemInput {
+    const params = {
         TableName: "BucketListItem",
         Item: {
-            "Achieved": postBody.Achieved,
-            "BucketListItemId": Number(postBody.BucketListItemId),
-            "Category": postBody.Category,
-            "CategorySortOrder": Number(postBody.CategorySortOrder),
-            "Created": postBody.Created,
-            "ListItemName": postBody.ListItemName
+            Achieved: {
+                S: postBody.Achieved,
+            },
+            BucketListItemId: {
+                S: postBody.BucketListItemId,
+            },
+            Category: {
+                S: postBody.Category,
+            },
+            CategorySortOrder: {
+                S: postBody.CategorySortOrder,
+            },
+            Created: {
+                S: postBody.Created,
+            },
+            ListItemName: {
+                S: postBody.ListItemName,
+            },
+            UserName: {
+                S: postBody.UserName,
+            },
         }
     };
 
     return params;
-}
-
-export function processResult(result: any, isError: boolean): Promise<string> {
-    if (isError){
-        return Promise.resolve('Unable to create item: ' + result.message);
-    } else {
-        return Promise.resolve(result);
-    }
 }

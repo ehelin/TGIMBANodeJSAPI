@@ -24,11 +24,11 @@ export function upsertBucketListItem(postBody: any): Promise<string> {
         .parameter('UserName', TYPES.VarChar, postBody.user)
         .execute()
         .then(function(results)
-    {
-        return processResult('Loaded!', false);
-    }).fail(function(err) {
-        return processResult(err, true);
-    });
+        {
+            return processResult('Loaded!', false);
+        }).fail(function(err) {
+            return processResult(err, true);
+        });
 }
 
 // TODO - move to a utils module (if possible)
@@ -63,19 +63,19 @@ export function evaluateParameter(postBody: any): string {
 }
 
 export function parametersExist(postBody)
-{	
-	let pmtersExt = false;
+{
+    let pmtersExt = false;
 
-	if (postBody != null
+    if (postBody != null
         && postBody != undefined
         && postBody.bucketListItems != null
         && postBody.bucketListItems != undefined
         && postBody.bucketListItems.length > 0
         && postBody.user != null
-				&& postBody.user != undefined)
-	{
-		pmtersExt = true;
-	}
+        && postBody.user != undefined)
+    {
+        pmtersExt = true;
+    }
 
-	return pmtersExt;
+    return pmtersExt;
 }
