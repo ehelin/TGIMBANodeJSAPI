@@ -1,4 +1,4 @@
-import {setUpDynamoDb} from "./setUp/dynamoDb/createTables";
+import {setUpDynamoDb} from "./setUp/dynamoDb/create";
 import {createBucketListItem} from "../src/dynamodb/createBucketListItem";
 import {expect} from 'chai';
 import {readBucketListItem} from "../src/dynamodb/readBucketListItem";

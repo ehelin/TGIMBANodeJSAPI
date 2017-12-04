@@ -78,9 +78,9 @@ export const UPSERT_BUCKET_LIST_ITEM = ' declare @InsertDbId int '
 export function getSqlServerConfig()
 {
     var config = {
-        userName: '',
-        password: '',
-        server: '',
+        userName: 'sa',
+        password: 'P@55w0rd',
+        server: '192.168.1.187',
     };
 
     return config;
