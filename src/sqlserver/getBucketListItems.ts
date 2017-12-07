@@ -3,7 +3,33 @@ import * as Errors from '../errors';
 import * as Constants from '../constants';
 import * as tp from 'tedious-promises';
 
-export function getBucketListItems(query: any): Promise<string> {
+function getBucketListItemsPromise(query: any) {
+    return new Promise(function(resolve, reject) {
+
+        var sql = buildSql(query);
+
+        console.log('sql: ', sql);
+        console.log('query: ', query);
+
+        return tp.sql(sql)
+            .parameter('userName', TYPES.TYPES.VarChar, query.userName)
+            .execute()
+            .then(function(results)
+            {
+                console.log('get bucket: ', results);
+                var parsedResults = parseResults(results);
+                resolve(results);
+
+                //return processResult(results, false);
+            }).fail(function(err) {
+                console.log('Error: ', err);
+                reject('Error: ' + err);
+               // return processResult('Get Bucket list Items error: ' + err, true);
+            });
+    });
+}
+
+export function getBucketListItems(query: any): Promise<{}> {
     let parameterStatus = evaluateParameter(query);
 
     if (parameterStatus !== null) {
@@ -12,18 +38,7 @@ export function getBucketListItems(query: any): Promise<string> {
 
     setConnection();
 
-    var sql = buildSql(query);
-
-    return tp.sql(sql)
-        .parameter('userName', TYPES.VarChar, query.userName)
-        .execute()
-        .then(function(results)
-        {
-            var parsedResults = parseResults(results);
-            return processResult(results, false);
-        }).fail(function(err) {
-            return processResult('Get Bucket list Items error: ' + err, true);
-        });
+    return getBucketListItemsPromise(query);
 }
 
 // TODO - move to a utils module (if possible)

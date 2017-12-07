@@ -3,7 +3,27 @@ import * as Errors from '../errors';
 import * as tp from 'tedious-promises';
 import * as TYPES from 'tedious';
 
-export function processUserRegistration(postBody): Promise<string>{
+function processUserRegistrationPromise(postBody: any) {
+    return new Promise(function(resolve, reject) {
+        let sql = Constants.INSERT_USER;
+
+        return tp.sql(sql)
+            .parameter('userName', TYPES.TYPES.VarChar, postBody.userName)
+            .parameter('salt', TYPES.TYPES.VarChar, postBody.salt)
+            .parameter('passWord', TYPES.TYPES.VarChar, postBody.passWord)
+            .parameter('email', TYPES.TYPES.VarChar, postBody.email)
+            .execute()
+            .then(function(results) {
+                resolve(results);
+            }).fail(function(err) {
+                console.log('Error: ', err);
+                reject('Error: ' + err);
+                //return processResult(err, true);
+            });
+    });
+}
+
+export function processUserRegistration(postBody: any): Promise<{}>{
     let parameterStatus = evaluateParameter(postBody);
 
     if (parameterStatus !== null) {
@@ -12,19 +32,7 @@ export function processUserRegistration(postBody): Promise<string>{
 
     setConnection();
 
-    let sql = Constants.INSERT_USER;
-
-    return tp.sql(sql)
-        .parameter('userName', TYPES.VarChar, postBody.userName)
-        .parameter('salt', TYPES.VarChar, postBody.salt)
-        .parameter('passWord', TYPES.VarChar, postBody.passWord)
-        .parameter('email', TYPES.VarChar, postBody.email)
-        .execute()
-        .then(function(results) {
-            return processResult(results, false);
-        }).fail(function(err) {
-            return processResult(err, true);
-        });
+    return processUserRegistrationPromise(postBody);
 }
 
 // TODO - move to a utils module (if possible)

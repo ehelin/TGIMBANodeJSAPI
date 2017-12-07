@@ -1,3 +1,4 @@
+import {getCredentials} from "../credentials";
 export const GET_USER_COUNT = 'SELECT [UserName] FROM [Bucket].[User];';
 
 export const USER_EXISTS_PART_1 = 'SELECT [PassWord]  FROM [Bucket].[User] where [UserName] = ';
@@ -77,11 +78,7 @@ export const UPSERT_BUCKET_LIST_ITEM = ' declare @InsertDbId int '
 
 export function getSqlServerConfig()
 {
-    var config = {
-        userName: '',
-        password: '',
-        server: '',
-    };
+    var config = getCredentials();
 
     return config;
 }

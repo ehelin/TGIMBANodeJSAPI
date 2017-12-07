@@ -8,6 +8,7 @@
     "@types/express": "^4.0.35",
     "@types/mocha": "^2.2.44",
     "@types/sinon": "^1.16.34",
+    "@types/tedious": "^1.8.31",
     "aws-sdk": "^2.9.0",
     "body-parser": "^1.16.0",
     "chai": "^3.5.0",
