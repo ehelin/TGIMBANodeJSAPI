@@ -13,7 +13,7 @@ export function deleteBucketListItem(postBody): Promise<string> {
     setConnection();
 
     return tp.sql(Constants.DELETE_BUCKET_LIST_ITEM)
-        .parameter('BucketListItemId', TYPES.Int, postBody.BucketListItemId)
+        .parameter('BucketListItemId', TYPES.TYPES.Int, postBody.BucketListItemId)
         .execute()
         .then(function (results) {
             return processResult(results, false);

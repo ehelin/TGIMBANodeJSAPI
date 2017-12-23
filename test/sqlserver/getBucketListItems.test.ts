@@ -144,7 +144,7 @@ describe('When retrieving bucket list items', () => {
         });
 
         it('an empty result array will produce an empty results array', () => {
-            expect(parseResults([])).to.eql(null);
+            expect(parseResults([])).to.eql([]);
         });
 
         // TODO - add tests to parse actual results once you can compile the complete project (i.e. dateformat)

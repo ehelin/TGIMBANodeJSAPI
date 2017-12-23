@@ -247,7 +247,6 @@ function getTableList() {
             .execute()
             .then(function(results)
             {
-                console.log('Database Tables: ', results);
                 resolve(results);
             }).fail(function(err) {
                 console.log('sqlServer/create->verifySqlServerDbIsSetup() - error: ' + err);

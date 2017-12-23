@@ -3,6 +3,7 @@ import * as Errors from '../errors';
 import * as tp from 'tedious-promises';
 import * as TYPES from 'tedious';
 
+// TODO - handle salt and other functions handled currently by .net code
 function processUserRegistrationPromise(postBody: any) {
     return new Promise(function(resolve, reject) {
         let sql = Constants.INSERT_USER;
@@ -16,9 +17,7 @@ function processUserRegistrationPromise(postBody: any) {
             .then(function(results) {
                 resolve(results);
             }).fail(function(err) {
-                console.log('Error: ', err);
                 reject('Error: ' + err);
-                //return processResult(err, true);
             });
     });
 }

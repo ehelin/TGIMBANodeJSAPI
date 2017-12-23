@@ -5,26 +5,18 @@ import * as tp from 'tedious-promises';
 
 function getBucketListItemsPromise(query: any) {
     return new Promise(function(resolve, reject) {
-
         var sql = buildSql(query);
-
-        console.log('sql: ', sql);
-        console.log('query: ', query);
 
         return tp.sql(sql)
             .parameter('userName', TYPES.TYPES.VarChar, query.userName)
             .execute()
             .then(function(results)
             {
-                console.log('get bucket: ', results);
                 var parsedResults = parseResults(results);
                 resolve(results);
-
-                //return processResult(results, false);
             }).fail(function(err) {
                 console.log('Error: ', err);
                 reject('Error: ' + err);
-               // return processResult('Get Bucket list Items error: ' + err, true);
             });
     });
 }
@@ -66,14 +58,14 @@ export function parseResults(results: any): any {  //TODO add return type
     let parsedResults = null;
 
     if (results) {
-        new Array(results.length);
+        parsedResults = [];
         for(let i=0; i<results.length; i++)
         {
-            parsedResults[i] = results[i].ListItemName + ','
+            parsedResults.push(results[i].ListItemName + ','
                 + dateFormat(results[i].Created, 'mm/dd/yyyy') + ','
                 + results[i].Category + ','
                 + getIntStringAchievedValue(results[i].Achieved) + ','
-                + results[i].BucketListItemId + ';';
+                + results[i].BucketListItemId + ';');
         }
     }
 

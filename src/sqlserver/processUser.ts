@@ -2,6 +2,7 @@ import * as Constants from '../constants';
 import * as Errors from '../errors';
 import * as tp from 'tedious-promises';
 
+// TODO - handle salt and other functions handled currently by .net code
 export function processUser(postBody){
     let parameterStatus = evaluateParameter(postBody);
 

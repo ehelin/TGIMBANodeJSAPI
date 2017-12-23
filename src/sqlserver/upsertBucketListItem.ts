@@ -12,16 +12,15 @@ export function upsertBucketListItem(postBody: any): Promise<string> {
 
     setConnection();
 
-    const sql = Constants.UPSERT_BUCKET_LIST_ITEM;
-    let items = postBody.bucketListItems.split(',');
+    let sql = Constants.UPSERT_BUCKET_LIST_ITEM;
 
     return tp.sql(sql)
-        .parameter('ListItemName', TYPES.VarChar, items[0])
-        .parameter('Created', TYPES.DateTime, new Date(items[1]))
-        .parameter('Category', TYPES.VarChar, items[2])
-        .parameter('Achieved', TYPES.VarChar, items[3])
-        .parameter('BucketListItemId', TYPES.VarChar, items[4])
-        .parameter('UserName', TYPES.VarChar, postBody.user)
+        .parameter('ListItemName', TYPES.TYPES.VarChar, postBody.bucketListItems[0].ListItemName)
+        .parameter('Created', TYPES.TYPES.DateTime, new Date(postBody.bucketListItems[0].Created))
+        .parameter('Category', TYPES.TYPES.VarChar, postBody.bucketListItems[0].Category)
+        .parameter('Achieved', TYPES.TYPES.VarChar, postBody.bucketListItems[0].Achieved)
+        .parameter('BucketListItemId', TYPES.TYPES.VarChar, postBody.bucketListItems[0].BucketListItemId)
+        .parameter('UserName', TYPES.TYPES.VarChar, postBody.user)
         .execute()
         .then(function(results)
         {

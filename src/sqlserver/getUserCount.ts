@@ -46,5 +46,3 @@ export function parseResults(results) {
 
     return count;
 }
-
-
