@@ -1,0 +1,10 @@
+version: "2"
+
+services:
+  tgimba-local-dynamodb:
+    container_name: local_dynamo_db
+    build:
+      context: ./dynamoDb
+      dockerfile: tgimba.dynamo.Docker
+    ports:
+      - "8000:8000"

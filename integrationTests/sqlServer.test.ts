@@ -58,7 +58,7 @@ describe('When using sql server', () => {
                 return processDeleteBucketListItem(bucketListItem[0].BucketListItemId)
             .then(() => {
 
-                // verify the bucket list item has been updated
+                // verify the bucket list item has been deleted
                 return processGetBucketListItems('12/1/2012', 1);
             });
             });

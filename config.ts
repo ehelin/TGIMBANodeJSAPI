@@ -5,7 +5,7 @@ export const databaseOptions = {
     accessKeyId: 'fakeAccessKeyId',
     secretAccessKey: 'fakeSecretAccessKey',
     region: 'fakeRegion',
-    endpoint: 'http://localhost:8634',
+    endpoint: 'http://localhost:8000',
 };
 
 export const setDynamoDbConnection = (): AWS.DynamoDB => {
