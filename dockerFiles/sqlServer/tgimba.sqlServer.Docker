@@ -1,0 +1,7 @@
+FROM microsoft/mssql-server-linux:2017-latest
+
+ENV SA_PASSWORD=tgimbaRu7351n2o17
+ENV MSSQL_PID=Developer
+ENV ACCEPT_EULA=Y
+
+CMD /opt/mssql/bin/sqlservr

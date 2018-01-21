@@ -1,10 +1,17 @@
 version: "2"
 
 services:
+  tgimba-local-sqlserver:
+    container_name: local_sql_server
+    build:
+      context: ./dockerFiles/sqlServer
+      dockerfile: tgimba.sqlServer.Docker
+    ports:
+      - "1433:1433"
   tgimba-local-dynamodb:
     container_name: local_dynamo_db
     build:
-      context: ./dynamoDb
+      context: ./dockerFiles/dynamoDb
       dockerfile: tgimba.dynamo.Docker
     ports:
       - "8000:8000"
